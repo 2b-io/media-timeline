@@ -1,0 +1,11 @@
+version: '3'
+services:
+  media-timeline:
+    build: .
+    container_name: media.timeline
+    command: bash -c "npm i && tail -f /dev/null"
+    volumes:
+      - .:/usr/src
+      - /usr/src/node_modules
+    ports:
+      - "3004:3004"
