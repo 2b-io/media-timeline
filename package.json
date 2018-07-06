@@ -49,6 +49,6 @@
   },
   "scripts": {
     "start": "nodemon ./internals/dev-server --exec babel-node --watch ./internals/dev-server --watch ./internals/webpack",
-    "build": "webpack --config internals/webpack/webpack.dev.babel.js"
+    "build": "rm -rf ./build && webpack --config internals/webpack/webpack.dev.babel.js"
   }
 }
