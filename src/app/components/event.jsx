@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { Component } from 'react'
+import Icon from 'react-icons-kit'
+import LightBox from 'react-images'
 import ScrollableAnchor from 'react-scrollable-anchor'
 import styled, { css } from 'styled-components'
+
+import { image } from 'react-icons-kit/feather/image'
 
 import PrettyDate from './pretty-date'
 
@@ -62,7 +66,7 @@ const ContentRow = styled.div`
 `
 
 const Line = styled.div`
-  border-right: 2px solid black;
+  border-right: 2px dashed black;
   width: 0;
   margin-left: 14px;
   min-height: 60px;
@@ -78,6 +82,9 @@ const Point = styled.div`
   border: 2px solid black;
   border-radius: 50%;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const Anchor = styled.a`
@@ -97,7 +104,7 @@ const Wrapper = styled.div`
     ${
       ({ selected }) => selected && css`
         ${ Point } {
-          background: black;
+          background: yellow;
         }
 
         ${ Content } {
@@ -108,26 +115,122 @@ const Wrapper = styled.div`
   }
 `
 
-const StartEvent = ({ odd, event, selected }) => (
-  <Wrapper selected={ selected }>
-    <Time left={ !odd }>
-      <PrettyDate date={ event.when } />
-    </Time>
-    <Content left={ odd }>
-      {
-        event.content.map(
-          (line, index) => <ContentRow key={ index }>{ line }</ContentRow>
-        )
-      }
-    </Content>
-    <ContentLine left={ odd } />
-    <ScrollableAnchor id={ event.index.toString() }>
-      <Point>
-        <Anchor href={ `#${ event.index }` } />
-      </Point>
-    </ScrollableAnchor>
-    <Line length={ event.next } />
-  </Wrapper>
-)
+class Event extends Component {
+  constructor(...args) {
+    super(...args)
 
-export default StartEvent
+    this.state = {
+      showImages: false,
+      currentImage: 0
+    }
+
+    this.gotoNext = this.gotoNext.bind(this)
+    this.gotoPrevious = this.gotoPrevious.bind(this)
+  }
+
+  render() {
+    const { odd, event, selected } = this.props
+    const { currentImage, showImages } = this.state
+
+    return (
+      <Wrapper selected={ selected } onClick={
+        (e) => e.stopPropagation()
+      }>
+        <Time left={ !odd }>
+          <PrettyDate date={ event.when } />
+        </Time>
+        <Content left={ odd }>
+          {
+            event.content.map(
+              (line, index) => <ContentRow key={ index }>{ line }</ContentRow>
+            )
+          }
+        </Content>
+        <ContentLine left={ odd } />
+        <ScrollableAnchor id={ event.index.toString() }>
+          <Point onClick={ this.toggleImages(true) }>
+            {
+              event.images &&
+                <Icon icon={ image } size={ 16 } />
+            }
+          </Point>
+        </ScrollableAnchor>
+        <Line length={ event.next } />
+        {
+          event.images &&
+            <LightBox
+              currentImage={ currentImage }
+              images={ event.images }
+              isOpen={ showImages }
+              onClose={ this.toggleImages(false) }
+              onClickNext={ this.gotoNext }
+              onClickPrev={ this.gotoPrevious }
+              onClickImage={ e => e.stopPropagation() }
+            />
+        }
+      </Wrapper>
+    )
+  }
+
+  toggleImages(showImages) {
+    return e => {
+      if (e) {
+        e.stopPropagation()
+        e.preventDefault()
+      }
+
+      this.setState({
+        showImages: showImages,
+        currentImage: 0
+      })
+    }
+  }
+
+  gotoPrevious() {
+    this.setState({
+      currentImage: this.state.currentImage - 1,
+    })
+  }
+
+  gotoNext() {
+    this.setState({
+      currentImage: this.state.currentImage + 1,
+    })
+  }
+
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown = event => {
+      if (event.keyCode === 13) {
+        event.preventDefault()
+      }
+
+      clearTimeout(this.keyboardThrottle)
+
+      this.keyboardThrottle = setTimeout(() => {
+        this.processLastKeyDown(event)
+      }, 100)
+    })
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown)
+  }
+
+  processLastKeyDown(e) {
+    const { selected, event } = this.props
+
+    if (!selected || !event.images) {
+      return
+    }
+
+    if (e.keyCode === 13) {
+      console.log('x')
+
+      this.setState({
+        showImages: true,
+        currentImage: 0
+      })
+    }
+  }
+}
+export default Event

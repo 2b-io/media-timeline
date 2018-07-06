@@ -23,7 +23,8 @@ const Button = styled.button.attrs({
 
 const GoToTop = () => (
   <Button onClick={ (e) => {
-    e.preventDefault()
+    e.stopPropagation()
+    // e.preventDefault()
 
     goToAnchor('#0', false)
   } }>

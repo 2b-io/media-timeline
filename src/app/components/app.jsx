@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { goToAnchor } from 'react-scrollable-anchor'
 
-import GoToTop from './go-to-top'
 import Navigator from './navigator'
 import Timeline from './timeline'
 
@@ -19,6 +18,10 @@ class App extends Component {
     this.next = this.next.bind(this)
   }
 
+  componentDidMount() {
+    this.goToEvent(0)
+  }
+
   render() {
     const { selected } = this.state
 
@@ -32,7 +35,6 @@ class App extends Component {
           onBack={ this.back }
           onNext={ this.next }
         />
-        <GoToTop />
       </Fragment>
     )
   }
