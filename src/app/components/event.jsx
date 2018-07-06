@@ -93,19 +93,23 @@ const Wrapper = styled.div`
   width: 30px;
   font-weight: 600;
 
-  &:hover {
-    ${ Point } {
-      background: black;
-    }
+  & {
+    ${
+      ({ selected }) => selected && css`
+        ${ Point } {
+          background: black;
+        }
 
-    ${ Content } {
-      background: yellow;
+        ${ Content } {
+          background: yellow;
+        }
+      `
     }
   }
 `
 
-const StartEvent = ({ odd, event }) => (
-  <Wrapper>
+const StartEvent = ({ odd, event, selected }) => (
+  <Wrapper selected={ selected }>
     <Time left={ !odd }>
       <PrettyDate date={ event.when } />
     </Time>

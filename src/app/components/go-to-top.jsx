@@ -22,7 +22,11 @@ const Button = styled.button.attrs({
 `
 
 const GoToTop = () => (
-  <Button onClick={ () => goToAnchor('#0', true) }>
+  <Button onClick={ (e) => {
+    e.preventDefault()
+
+    goToAnchor('#0', false)
+  } }>
     <Icon icon={ arrowUpCircle } size={ 48 } />
   </Button>
 )

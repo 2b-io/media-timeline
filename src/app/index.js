@@ -4,8 +4,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { configureAnchors } from 'react-scrollable-anchor'
 
-import Timeline from './components/timeline'
-import events from './data'
+import App from './components/app'
 
 configureAnchors({
   offset: -60,
@@ -15,6 +14,6 @@ configureAnchors({
 const root = document.getElementById('root')
 
 render(
-  <Timeline events={ events } />,
+  <App />,
   root
 )

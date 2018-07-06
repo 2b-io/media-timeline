@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import GoToTop from './go-to-top'
 import Event from './event'
 
 const Wrapper = styled.div`
@@ -9,7 +8,7 @@ const Wrapper = styled.div`
   padding-top: 30px;
 `
 
-const Timeline = ({ events }) => (
+const Timeline = ({ events, selected }) => (
   <Wrapper>
     {
       events.map(
@@ -18,11 +17,11 @@ const Timeline = ({ events }) => (
             key={ index }
             event={ event }
             odd={ !!(index % 2) }
+            selected={ selected === index }
           />
         )
       )
     }
-    <GoToTop />
   </Wrapper>
 )
 
