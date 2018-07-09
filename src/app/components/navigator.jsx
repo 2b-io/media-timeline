@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-const REACT_LATENCY = 200
+const REACT_LATENCY = 300
 
 class Navigator extends Component {
   componentDidMount() {
@@ -23,11 +23,20 @@ class Navigator extends Component {
         this.processLastKeyDown(event)
       }, REACT_LATENCY)
     })
+
+    window.addEventListener('mousewheel', this.handleMouseWheel = event => {
+      clearTimeout(this.mouseWheelThrottle)
+
+      this.mouseWheelThrottle = setTimeout(() => {
+        this.processLastMouseWheel(event)
+      }, REACT_LATENCY)
+    })
   }
 
   componentWillUnmount() {
     window.removeEventListener('click', this.handleClick)
     window.removeEventListener('keydown', this.handleKeyDown)
+    window.removeEventListener('mousewheel', this.handleMouseWheel)
   }
 
   render() {
@@ -50,6 +59,16 @@ class Navigator extends Component {
     if (event.keyCode === 40) {
       next()
     } else if (event.keyCode === 38) {
+      back()
+    }
+  }
+
+  processLastMouseWheel(event) {
+    const { onBack: back, onNext: next } = this.props
+
+    if (event.deltaY > 0) {
+      next()
+    } else if (event.deltaY < 0) {
       back()
     }
   }

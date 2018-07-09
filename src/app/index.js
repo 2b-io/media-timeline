@@ -8,7 +8,7 @@ import App from './components/app'
 
 configureAnchors({
   offset: -60,
-  scrollDuration: 500
+  scrollDuration: 200
 })
 
 const root = document.getElementById('root')
